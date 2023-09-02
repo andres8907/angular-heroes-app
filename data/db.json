@@ -2,7 +2,7 @@
   "users": [
     {
       "id": 1,
-      "usuario": "John Doe",
+      "user": "John Doe",
       "email": "john.due@gmail.com"
     }
   ],
@@ -166,15 +166,6 @@
       "alter_ego": "Norrin Radd",
       "first_appearance": "The Fantastic Four #48",
       "characters": "Norrin Radd"
-    },
-    {
-      "id": "EwA_OFY",
-      "superhero": "Andres",
-      "publisher": "Marvel Comics",
-      "alter_ego": "Shiru",
-      "first_appearance": "Comic Kruger 2015",
-      "characters": "Andres",
-      "alt_img": "https://i.pinimg.com/550x/0d/b1/30/0db1302f1be3dab8ee42ff1a6375a041.jpg"
     }
   ]
 }

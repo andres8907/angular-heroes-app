@@ -3,7 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Hero, Publisher } from '../../interfaces/hero.interface';
 import { HeroesService } from '../../services/heroes.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-new-page',
@@ -32,7 +35,9 @@ export class NewPageComponent implements OnInit{
   constructor(
     private heroesServices: HeroesService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackbar: MatSnackBar,
+    private dialog: MatDialog
     ){}
 
   
@@ -65,16 +70,42 @@ export class NewPageComponent implements OnInit{
     if( this.currentHero.id){
       this.heroesServices.updateHero(this.currentHero)
       .subscribe( hero => {
-
+        this.showSnacbar(`${hero.superhero} update!`);
       });
       return;
     }
 
     this.heroesServices.addHero(this.currentHero)
     .subscribe( hero => {
+      this.router.navigate(['/heroes/edit', hero.id]);
+      this.showSnacbar(`${hero.superhero} created!`);
 
     });
 
+  }
+
+  onDeleteHero(){
+    if( !this.currentHero.id) throw Error('Hero id is required');
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: this.heroForm.value,
+    });
+
+    dialogRef.afterClosed()
+    .pipe(
+      filter( (result: boolean) => result),
+      switchMap( () => this.heroesServices.deleteHeroIs( this.currentHero.id)),
+      filter( (wasDeleted: boolean) => wasDeleted),
+    )
+    .subscribe( () => {
+      this.router.navigate( ['/heroes']);
+    });
+  }
+
+  showSnacbar(message: string):void{
+    this.snackbar.open(message, 'done', {
+      duration: 2500,
+    });
   }
 
 }
